@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>测试图片加载</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+
+<body>
+<div id="app">
+    <h1>测试图片加载</h1>
+    <button @click="fetchImage">加载图片</button>
+    <button @click="buttonTest">测试按钮</button>
+
+    <div v-if="imageUrl">
+        <img :src="imageUrl" alt="加载的图片" />
+    </div>
+    <div v-else>
+        <p>点击按钮加载图片</p>
+    </div>
+</div>
+<script>
+    //Vue前端，v-if"imageUrl"，然后挂载图片<img :src="imageUrl">
+    //好来解读下这个vue前端，说先new了一个Vue({}),里面内容挂在了#app里
+    //data(){return{imageUrl}}
+    //methods:{ method1(){} },,里面有个异步通信async fetchImage()，等待await axios.get(`\xxx`)
+    //最后this.imageUrl=result.data。返回体的json数据挂上去。
+
+    new Vue({
+        el: '#app',
+        data() {
+            return {
+                imageUrl: null, // 用于存储从后端获取的图片路径
+            };
+        },
+        methods: {
+            buttonTest() {
+                alert('按钮测试成功');
+            },
+
+            async fetchImage() {
+                try {
+                    const result = await axios.get(`/upload_test`);
+                    console.log(result.data);
+                    this.imageUrl = result.data; // 确保拿到返回的图片路径
+                } catch (error) {
+                    console.error('加载图片失败', error);
+                    alert('加载图片失败，请重试');
+                }
+            },
+        },
+    });
+</script>
+</body>
+
+</html>

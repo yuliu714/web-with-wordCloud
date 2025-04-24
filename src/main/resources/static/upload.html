@@ -1,0 +1,40 @@
+<meta charset="UTF-8">
+<title>输入文本</title>
+<body>
+<form id="uploadForm">
+    <textarea name="text" rows="10" cols="50" placeholder="请输入内容..."></textarea>
+    <br>
+    <input type="submit" value="提交">
+</form>
+<img id="imageDisplay" src="" alt="Uploaded Image" style="display: none;">
+</body>
+
+<script>
+    const form = document.getElementById('uploadForm');
+    form.addEventListener('submit', function (e) {
+        e.preventDefault();//阻止默认提交
+
+        const text = form.elements.text.value;
+        const formData = new FormData();//表单数据对象
+        formData.append('text', text);
+
+        fetch('/upload', {//fetch的api，通过Post方法把formData提交上去
+            method: 'POST',
+            body: formData
+        })
+            .then(response => response.text())//处理响应response.text
+            .then(imagePath => {
+                const imageDisplay = document.getElementById('imageDisplay');
+                if (imagePath.startsWith('Error')) {
+                    console.error(imagePath);
+                } else {
+                    imageDisplay.src = imagePath;
+                    imageDisplay.style.display = 'block';
+                    console.log('Image uploaded successfully:', imagePath);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    });
+</script>
